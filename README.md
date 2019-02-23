@@ -10,6 +10,7 @@ The prompt may look like the following:
 
 -   `(master↑3|✚1)`: on branch `master`, ahead of remote by 3 commits, 1 file changed but not staged
 -   `(status|●2)`: on branch `status`, 2 files staged
+-   `(master★ v1.1|●2⚑2)`: on branch `master`, latest tag `v1.1`, 2 files staged, 2 stashes
 -   `(master|✚7…)`: on branch `master`, 7 files changed, some files untracked
 -   `(master|✖2✚3)`: on branch `master`, 2 conflicts, 3 files changed
 -   `(experimental↓2↑3|✔)`: on branch `experimental`; your branch has diverged by 3 commits, remote by 2 commits; the repository is otherwise clean
@@ -19,7 +20,11 @@ The prompt may look like the following:
 Here is how it could look like when you are ahead by 4 commits, behind by 5 commits, and have 1 staged files, 1 changed but unstaged file, and some untracked files, on branch `dev`:
 
 
-<img src="https://github.com/olivierverdier/zsh-git-prompt/raw/master/screenshot.png" width=300/>
+<img src="https://github.com/RoDuth/zsh-git-prompt/raw/master/screenshot.png" width=300/>
+
+With `ZSH_THEME_GIT_PROMPT_EXTRAS=(stash tag)` set in your `~/.zshrc`
+
+<img src="https://github.com/RoDuth/zsh-git-prompt/raw/master/screenshot2.png" width=150/>
 
 
 ## Prompt Structure
@@ -27,7 +32,7 @@ Here is how it could look like when you are ahead by 4 commits, behind by 5 comm
 By default, the general appearance of the prompt is:
 
 ```
-(<branch><branch tracking>|<local status>)
+(<branch><tag><branch tracking>|<local status>)
 ```
 
 The symbols are as follows:
@@ -37,11 +42,12 @@ The symbols are as follows:
 |Symbol|Meaning
 |------|------|
 |✔ |   repository clean
+|★ |   latest tag
 |●n |   there are `n` staged files
 |✖n |   there are `n` unmerged files
 |✚n |   there are `n` changed but *unstaged* files
 |… |   there are some untracked files
-
+|⚑n |   there are `n` stashes
 
 ### Branch Tracking Symbols
 
@@ -74,6 +80,7 @@ When the branch name starts with a colon `:`, it means it’s actually a hash, n
 - Define the variable `ZSH_THEME_GIT_PROMPT_CACHE` in order to enable caching.
 - You may also change a number of variables (which name start with `ZSH_THEME_GIT_PROMPT_`) to change the appearance of the prompt.  Take a look in the file `zshrc.sh` to see how the function `git_super_status` is defined, and what variables are available.
 - You may change the value of `ZSH_THEME_GIT_PROMPT_GENERAL` variable to color `(`, `)`, and `|`. Also, use this variable to use the same color for other parts of PROMPT and git status part.
+- Tag and Stashes require extra runs of git and will be slower.  They are not enabled by default.  To enable define `ZSH_THEME_GIT_PROMPT_EXTRAS`.  Possible values are `tag` or `stash`, to enable both use `(tag stash)`
 
 **Enjoy!**
 

@@ -44,7 +44,7 @@ function update_current_git_vars() {
   unset __CURRENT_GIT_STATUS
 
   local gitstatus="$__GIT_PROMPT_DIR/gitstatus.py"
-  _GIT_STATUS=`python ${gitstatus} 2>/dev/null`
+  _GIT_STATUS=`python ${gitstatus} $ZSH_THEME_GIT_PROMPT_EXTRAS 2>/dev/null`
 
   __CURRENT_GIT_STATUS=("${(@s: :)_GIT_STATUS}")
 	GIT_BRANCH=$__CURRENT_GIT_STATUS[1]
@@ -54,12 +54,17 @@ function update_current_git_vars() {
 	GIT_CONFLICTS=$__CURRENT_GIT_STATUS[5]
 	GIT_CHANGED=$__CURRENT_GIT_STATUS[6]
 	GIT_UNTRACKED=$__CURRENT_GIT_STATUS[7]
+  GIT_STASHED=$__CURRENT_GIT_STATUS[8]
+  GIT_TAG=$__CURRENT_GIT_STATUS[9]
 }
 
 
 git_super_status() {
     if [ -n "$__CURRENT_GIT_STATUS" ]; then
 	  STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH$GIT_BRANCH%{${reset_color}%}"
+	  if [ -n "$GIT_TAG" ]; then
+		  STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_TAG$GIT_TAG%{${reset_color}%}"
+	  fi
 	  if [ "$GIT_BEHIND" -ne "0" ]; then
 		  STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BEHIND$GIT_BEHIND%{${reset_color}%}"
 	  fi
@@ -79,6 +84,9 @@ git_super_status() {
 	  if [ "$GIT_UNTRACKED" -ne "0" ]; then
 		  STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED$GIT_UNTRACKED%{${reset_color}%}"
 	  fi
+	  if [ "$GIT_STASHED" -ne "0" ]; then
+		  STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STASHED$GIT_STASHED%{${reset_color}%}"
+	  fi
 	  if [ "$GIT_CHANGED" -eq "0" ] && [ "$GIT_CONFLICTS" -eq "0" ] && [ "$GIT_STAGED" -eq "0" ] && [ "$GIT_UNTRACKED" -eq "0" ]; then
 		  STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CLEAN"
 	  fi
@@ -93,12 +101,14 @@ ZSH_THEME_GIT_PROMPT_PREFIX="$ZSH_THEME_GIT_PROMPT_GENERAL("
 ZSH_THEME_GIT_PROMPT_SUFFIX="$ZSH_THEME_GIT_PROMPT_GENERAL)"
 ZSH_THEME_GIT_PROMPT_SEPARATOR="$ZSH_THEME_GIT_PROMPT_GENERAL|"
 ZSH_THEME_GIT_PROMPT_BRANCH="%{$fg_bold[magenta]%}"
+ZSH_THEME_GIT_PROMPT_TAG="%{$fg[green]%}%{★ %G%}"
 ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{●%G%}"
 ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
 ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
 ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
 ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{…%G%}"
+ZSH_THEME_GIT_PROMPT_STASHED="%{$fg[yellow]%}%{⚑%G%}"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
 
 

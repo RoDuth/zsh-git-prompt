@@ -72,6 +72,17 @@ for st in status:
         elif st[0] != ' ':
             staged.append(st)
 
+# extras, both require another run of git.
+stashed = 0
+if 'stash' in sys.argv:
+    stashed = (Popen(['git', 'stash', 'list'], stdout=PIPE, stderr=PIPE)
+               .communicate()[0].count(b'\n'))
+
+tag = ''
+if 'tag' in sys.argv:
+    tag = (Popen(['git', 'describe', '--tags', '--abbrev=0'], stdout=PIPE,
+                 stderr=PIPE).communicate()[0].strip())
+
 out = ' '.join([
     branch,
     str(ahead),
@@ -80,5 +91,7 @@ out = ' '.join([
     str(len(conflicts)),
     str(len(changed)),
     str(len(untracked)),
+    str(stashed),
+    tag,
 ])
 print(out, end='')
