@@ -80,8 +80,11 @@ if 'stash' in sys.argv:
 
 tag = ''
 if 'tag' in sys.argv:
-    tag = (Popen(['git', 'describe', '--tags', '--abbrev=0'], stdout=PIPE,
-                 stderr=PIPE).communicate()[0].strip())
+    pop = Popen(['git', 'describe', '--tags', '--abbrev=0'], stdout=PIPE,
+                stderr=PIPE)
+    out, err = pop.communicate()
+    if not err:
+        tag = out.strip()
 
 out = ' '.join([
     branch,
