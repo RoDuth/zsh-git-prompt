@@ -61,7 +61,13 @@ function update_current_git_vars() {
 
 git_super_status() {
     if [ -n "$__CURRENT_GIT_STATUS" ]; then
-	  STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH$GIT_BRANCH%{${reset_color}%}"
+	  STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH"
+    if [ $COLUMNS -gt 80 ]; then
+      STATUS="$STATUS$GIT_BRANCH"
+    elif [ $COLUMNS -gt 60 ]; then
+      STATUS="$STATUS${GIT_BRANCH%${GIT_BRANCH#??}}.."
+    fi
+    STATUS="$STATUS%{${reset_color}%}"
 	  if [ -n "$GIT_TAG" ]; then
 		  STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_TAG$GIT_TAG%{${reset_color}%}"
 	  fi
