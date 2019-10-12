@@ -80,8 +80,16 @@ if 'stash' in sys.argv:
 
 tag = ''
 if 'tag' in sys.argv:
-    pop = Popen(['git', 'describe', '--tags', '--abbrev=0'], stdout=PIPE,
-                stderr=PIPE)
+    try:
+        # python 3
+        pop = Popen(  # pylint: disable=unexpected-keyword-arg
+            ['git', 'describe', '--tags', '--abbrev=0'],
+            stdout=PIPE, stderr=PIPE, text=True
+        )
+    except TypeError:
+        # python 2
+        pop = Popen(['git', 'describe', '--tags', '--abbrev=0'], stdout=PIPE,
+                    stderr=PIPE)
     out, err = pop.communicate()
     if not err:
         tag = out.strip()
